@@ -3,9 +3,16 @@ namespace Asset_tracking
 {
     public class MobilePhone : Asset
     {
-	    public MobilePhone(string brand, string modelName, DateTime purchaseDate, int price, string location)
-	    {
-            this = Asset(brand, modelName, purchaseDate, price, location);
+        public MobilePhone(int id, string brand, string modelName, DateTime purchaseDate, decimal price, string currency, string location)
+	    {       
+            ID = id;
+            Brand = brand;
+            ModelName = modelName;
+            PurchaseDate = purchaseDate;
+            Price = price;
+            Currency = currency;
+            Location = location;
+            LocalPrice = CurrencyConverter.GetLocalPrice(price, currency);
         }
     }
 }
