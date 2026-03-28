@@ -24,7 +24,7 @@ namespace Asset_tracking
 
             CurrencyConverter.FetchCurrencyRatesFromECB(); // Fetches the currency exchange rates from ECB when AssetTracker is created.
 
-            //If a file exists, load it. Otherwise, create a sample file with a list of projects.
+            //If a file exists, load it. Otherwise, create a sample list of assets.
             if (File.Exists(FilePath))
                 LoadAssetsFile();
             else
@@ -32,38 +32,6 @@ namespace Asset_tracking
                 CreateSampleAssetsList();
                 SaveFile();
             }
-        }
-
-
-
-        public void CreateSampleAssetsList()
-        {
-            nextAssetID = 0;
-            
-            AssetsList.AddRange(
-                [
-                    new MobilePhone(nextAssetID++, "Motorola", "X3", DateTime.Now.AddMonths(-36 + 4), 1880, "USD", "Usa"),
-                    new MobilePhone(nextAssetID++, "Motorola", "X3", DateTime.Now.AddMonths(-36 + 5), 3750, "USD", "Usa"),
-                    new MobilePhone(nextAssetID++, "Motorola", "X2", DateTime.Now.AddMonths(-36 + 10), 3750, "USD", "Usa"),
-                    new MobilePhone(nextAssetID++, "Samsung", "Galaxy 10", DateTime.Now.AddMonths(-36 + 6), 4500, "SEK", "Sweden"),
-                    new MobilePhone(nextAssetID++, "Samsung", "Galaxy 10", DateTime.Now.AddMonths(-36 + 7), 4500, "SEK", "Sweden"),
-                    new MobilePhone(nextAssetID++, "Sony", "XPeria 7", DateTime.Now.AddMonths(-36 + 4), 3000, "SEK", "Sweden"),
-                    new MobilePhone(nextAssetID++, "Sony", "XPeria 7", DateTime.Now.AddMonths(-36 + 5), 3000, "SEK", "Sweden"),
-                    new MobilePhone(nextAssetID++, "Siemens", "Brick", DateTime.Now.AddMonths(-36 + 12), 2385, "EUR", "Germany"),
-                    new Computer(nextAssetID++, "Dell", "Desktop 900", DateTime.Now.AddMonths(-38), 940, "USD", "Usa"),
-                    new Computer(nextAssetID++, "Dell", "Desktop 900", DateTime.Now.AddMonths(-37), 940, "USD", "Usa"),
-                    new Computer(nextAssetID++, "Lenovo", "X100", DateTime.Now.AddMonths(-36 + 1), 2800, "USD", "Usa"),
-                    new Computer(nextAssetID++, "Lenovo", "X200", DateTime.Now.AddMonths(-36 + 4), 2800, "USD", "Usa"),
-                    new Computer(nextAssetID++, "Lenovo", "X300", DateTime.Now.AddMonths(-36 + 9), 4690, "USD", "Usa"),
-                    new Computer(nextAssetID++, "Dell", "Optiplex 100", DateTime.Now.AddMonths(-36 + 7), 1500, "SEK", "Sweden"),
-                    new Computer(nextAssetID++, "Dell", "Optiplex 200", DateTime.Now.AddMonths(-36 + 8), 1400, "SEK", "Sweden"),
-                    new Computer(nextAssetID++, "Dell", "Optiplex 300", DateTime.Now.AddMonths(-36 + 9), 1300, "SEK", "Sweden"),
-                    new Computer(nextAssetID++, "Asus", "ROG 600", DateTime.Now.AddMonths(-36 + 14), 17350, "EUR", "Germany"),
-                    new Computer(nextAssetID++, "Asus", "ROG 500", DateTime.Now.AddMonths(-36 + 4), 13000, "EUR", "Germany"),
-                    new Computer(nextAssetID++, "Asus", "ROG 500", DateTime.Now.AddMonths(-36 + 3), 13000, "EUR", "Germany"),
-                    new Computer(nextAssetID++, "Asus", "ROG 500", DateTime.Now.AddMonths(-36 + 2), 14000, "EUR", "Germany")
-                ]
-            );
         }
 
         public void SaveFile()
@@ -124,27 +92,7 @@ namespace Asset_tracking
                 Console.WriteLine(asset.Price.ToString().PadRight(15) + asset.Currency.PadRight(11) + asset.LocalPrice.ToString().PadRight(14));
             }
         }
-
-        public void ShowAssetsWithLineNumbers()
-        {
-            AssetsList = AssetsList.OrderBy(a => a.GetType().Name).ThenBy(a => a.PurchaseDate).ToList();
-            
-            // Write header line.
-            ColoredText.Write("\n Type of Asset".PadRight(21) + "Brand".PadRight(11) + "Model".PadRight(15), ConsoleColor.Green);
-            ColoredText.Write("Country".PadRight(10) + "Purchase date".PadRight(16) + "Price in SEK".PadRight(15), ConsoleColor.Green);
-            ColoredText.WriteLine("Currency".PadRight(11) + "Local price".PadRight(14), ConsoleColor.Green);
-
-            for (int i = 0; i < AssetsList.Count; i++)
-            {
-                if (i < 9)
-                    Console.Write("\n  " + (i + 1) + ". " + AssetsList[i].GetType().Name.PadRight(15) + AssetsList[i].Brand.PadRight(11) );
-                else
-                    Console.Write("\n " + (i + 1) + ". " + AssetsList[i].GetType().Name.PadRight(15) + AssetsList[i].Brand.PadRight(11));
-
-                Console.Write(AssetsList[i].ModelName.PadRight(15) + AssetsList[i].Country.PadRight(10) + AssetsList[i].PurchaseDate.ToString("yyyy-MM-dd").PadRight(16));
-                Console.WriteLine(AssetsList[i].Price.ToString().PadRight(15) + AssetsList[i].Currency.PadRight(11) + AssetsList[i].LocalPrice.ToString().PadRight(14));
-            }
-        }
+        
         public void AddNewAsset()
         {
             ColoredText.WriteLine("\n Enter a new asset.", ConsoleColor.Yellow);
@@ -212,25 +160,6 @@ namespace Asset_tracking
             AssetsList.RemoveAt(index - 1);
         }
 
-
-        // Gets a atring from the console and validates it so its not empty.
-        private string GetValidatedStringFromConsole(string variableName)
-        {
-            string result = Console.ReadLine();
-
-            while (String.IsNullOrEmpty(result))
-            {
-                ColoredText.WriteLine("\n " + variableName + " can't be an empty string", ConsoleColor.Red);
-
-                ColoredText.Write("\n Enter a " + variableName + ": ", ConsoleColor.Yellow);
-                result = Console.ReadLine();
-            }
-
-            return result;
-        }
-
-       
-
         public int GetValidatedIntFromConsole(string variableName, int min, int max)
         {
             bool isValidInteger = false;
@@ -254,7 +183,45 @@ namespace Asset_tracking
             return index;
         }
 
-        public decimal GetValidatedDecimalFromConsole(string variableName)
+        private void ShowAssetsWithLineNumbers()
+        {
+            AssetsList = AssetsList.OrderBy(a => a.GetType().Name).ThenBy(a => a.PurchaseDate).ToList();
+
+            // Write header line.
+            ColoredText.Write("\n Type of Asset".PadRight(21) + "Brand".PadRight(11) + "Model".PadRight(15), ConsoleColor.Green);
+            ColoredText.Write("Country".PadRight(10) + "Purchase date".PadRight(16) + "Price in SEK".PadRight(15), ConsoleColor.Green);
+            ColoredText.WriteLine("Currency".PadRight(11) + "Local price".PadRight(14), ConsoleColor.Green);
+
+            for (int i = 0; i < AssetsList.Count; i++)
+            {
+                if (i < 9)
+                    Console.Write("\n  " + (i + 1) + ". " + AssetsList[i].GetType().Name.PadRight(15) + AssetsList[i].Brand.PadRight(11));
+                else
+                    Console.Write("\n " + (i + 1) + ". " + AssetsList[i].GetType().Name.PadRight(15) + AssetsList[i].Brand.PadRight(11));
+
+                Console.Write(AssetsList[i].ModelName.PadRight(15) + AssetsList[i].Country.PadRight(10) + AssetsList[i].PurchaseDate.ToString("yyyy-MM-dd").PadRight(16));
+                Console.WriteLine(AssetsList[i].Price.ToString().PadRight(15) + AssetsList[i].Currency.PadRight(11) + AssetsList[i].LocalPrice.ToString().PadRight(14));
+            }
+        }
+
+        // Gets a atring from the console and validates it so its not empty.
+        private string GetValidatedStringFromConsole(string variableName)
+        {
+            string result = Console.ReadLine();
+
+            while (String.IsNullOrEmpty(result))
+            {
+                ColoredText.WriteLine("\n " + variableName + " can't be an empty string", ConsoleColor.Red);
+
+                ColoredText.Write("\n Enter a " + variableName + ": ", ConsoleColor.Yellow);
+                result = Console.ReadLine();
+            }
+
+            return result;
+        }
+
+       
+        private decimal GetValidatedDecimalFromConsole(string variableName)
         {
             bool isDecimal = false;
             decimal value;
@@ -300,7 +267,6 @@ namespace Asset_tracking
         }
 
 
-
         private void LoadAssetsFile()
         {
             try
@@ -315,6 +281,36 @@ namespace Asset_tracking
             {
                 ColoredText.WriteLine(" Failed to open saved Projects List\n", ConsoleColor.Red);
             }
+        }
+
+        private void CreateSampleAssetsList()
+        {
+            nextAssetID = 0;
+
+            AssetsList.AddRange(
+                [
+                    new MobilePhone(nextAssetID++, "Motorola", "X3", DateTime.Now.AddMonths(-36 + 4), 1880, "USD", "Usa"),
+                    new MobilePhone(nextAssetID++, "Motorola", "X3", DateTime.Now.AddMonths(-36 + 5), 3750, "USD", "Usa"),
+                    new MobilePhone(nextAssetID++, "Motorola", "X2", DateTime.Now.AddMonths(-36 + 10), 3750, "USD", "Usa"),
+                    new MobilePhone(nextAssetID++, "Samsung", "Galaxy 10", DateTime.Now.AddMonths(-36 + 6), 4500, "SEK", "Sweden"),
+                    new MobilePhone(nextAssetID++, "Samsung", "Galaxy 10", DateTime.Now.AddMonths(-36 + 7), 4500, "SEK", "Sweden"),
+                    new MobilePhone(nextAssetID++, "Sony", "XPeria 7", DateTime.Now.AddMonths(-36 + 4), 3000, "SEK", "Sweden"),
+                    new MobilePhone(nextAssetID++, "Sony", "XPeria 7", DateTime.Now.AddMonths(-36 + 5), 3000, "SEK", "Sweden"),
+                    new MobilePhone(nextAssetID++, "Siemens", "Brick", DateTime.Now.AddMonths(-36 + 12), 2385, "EUR", "Germany"),
+                    new Computer(nextAssetID++, "Dell", "Desktop 900", DateTime.Now.AddMonths(-38), 940, "USD", "Usa"),
+                    new Computer(nextAssetID++, "Dell", "Desktop 900", DateTime.Now.AddMonths(-37), 940, "USD", "Usa"),
+                    new Computer(nextAssetID++, "Lenovo", "X100", DateTime.Now.AddMonths(-36 + 1), 2800, "USD", "Usa"),
+                    new Computer(nextAssetID++, "Lenovo", "X200", DateTime.Now.AddMonths(-36 + 4), 2800, "USD", "Usa"),
+                    new Computer(nextAssetID++, "Lenovo", "X300", DateTime.Now.AddMonths(-36 + 9), 4690, "USD", "Usa"),
+                    new Computer(nextAssetID++, "Dell", "Optiplex 100", DateTime.Now.AddMonths(-36 + 7), 1500, "SEK", "Sweden"),
+                    new Computer(nextAssetID++, "Dell", "Optiplex 200", DateTime.Now.AddMonths(-36 + 8), 1400, "SEK", "Sweden"),
+                    new Computer(nextAssetID++, "Dell", "Optiplex 300", DateTime.Now.AddMonths(-36 + 9), 1300, "SEK", "Sweden"),
+                    new Computer(nextAssetID++, "Asus", "ROG 600", DateTime.Now.AddMonths(-36 + 14), 17350, "EUR", "Germany"),
+                    new Computer(nextAssetID++, "Asus", "ROG 500", DateTime.Now.AddMonths(-36 + 4), 13000, "EUR", "Germany"),
+                    new Computer(nextAssetID++, "Asus", "ROG 500", DateTime.Now.AddMonths(-36 + 3), 13000, "EUR", "Germany"),
+                    new Computer(nextAssetID++, "Asus", "ROG 500", DateTime.Now.AddMonths(-36 + 2), 14000, "EUR", "Germany")
+                ]
+            );
         }
         // Not used anymore.
         private List<Asset> sortAssetsListByTypeOfAsset()

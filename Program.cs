@@ -73,7 +73,6 @@ namespace Asset_tracking
                     tracker.SaveFile();
                     System.Environment.Exit(0);
                     break;
-              
             }
 
             ShowMenu();
