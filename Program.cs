@@ -16,7 +16,7 @@ namespace Asset_tracking
 
           
 
-            ColoredText.WriteLine("\n Welcome to this Asset-tracker app", ConsoleColor.Yellow);
+            ColoredText.WriteLine("\n Welcome to this Asset-tracker app!", ConsoleColor.Yellow);
 
             ShowMenu();
         }
@@ -50,9 +50,9 @@ namespace Asset_tracking
         }
         private static void Navigate()
         {
-            ColoredText.Write("\n\n Enter a line number: ", ConsoleColor.Yellow);
             int min = 1;
-            int max = 5;         
+            int max = 5;     
+            Console.WriteLine();
             int answer = tracker.GetValidatedIntFromConsole("Line number", min, max);
 
             switch (answer)
@@ -61,7 +61,7 @@ namespace Asset_tracking
                     tracker.ShowAssets("byType");
                     break;
                 case 2:
-                    tracker.ShowAssets("byLocation");
+                    tracker.ShowAssets("byCountry");
                     break;
                 case 3:
                     tracker.AddNewAsset();

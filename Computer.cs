@@ -3,7 +3,7 @@ namespace Asset_tracking
 {
 	public class Computer : Asset
 	{
-		public Computer(int id, string brand, string modelName, DateTime purchaseDate, decimal price, string currency, string location)
+		public Computer(int id, string brand, string modelName, DateTime purchaseDate, decimal price, string currency, string country)
 		{
             ID = id;
             Brand = brand;
@@ -11,7 +11,7 @@ namespace Asset_tracking
             PurchaseDate = purchaseDate;
             Price = price;
             Currency = currency;
-            Location = location;
+            Country = country;
             LocalPrice = CurrencyConverter.GetLocalPrice(price, currency);
         }
 

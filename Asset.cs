@@ -13,13 +13,13 @@ namespace Asset_tracking
         public DateTime PurchaseDate { get; set; }
         public decimal Price { get; set; }
         public string Currency { get; set; }
-        public string Location { get; set; }
+        public string Country { get; set; }
 
         public decimal LocalPrice { get; set; }
 
         public Asset(){ }
 
-        public Asset(int id, string brand, string modelName, DateTime purchaseDate, int price, string currency,  string location)
+        public Asset(int id, string brand, string modelName, DateTime purchaseDate, int price, string currency,  string country)
         {
             ID = id;
             Brand = brand;
@@ -27,7 +27,7 @@ namespace Asset_tracking
             PurchaseDate = purchaseDate;
             Price = price;
             Currency = currency;
-            Location = location;      
+            Country = country;      
             LocalPrice = CurrencyConverter.GetLocalPrice(Price, Currency);
         }
     }

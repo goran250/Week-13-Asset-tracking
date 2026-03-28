@@ -8,7 +8,6 @@ using System.Text.Json;
 using System.Xml.Linq;
 
 
-
 namespace Asset_tracking
 {
     public class AssetTracker
@@ -83,9 +82,9 @@ namespace Asset_tracking
         }
 
 
-        public void ShowAssets(string byTypeOrLocation)
+        public void ShowAssets(string byTypeOrCountry)
         {
-            if (byTypeOrLocation == "byType")
+            if (byTypeOrCountry == "byType")
             {
                 // sortAssetsListByTypeOfAsset();
                 
@@ -93,9 +92,9 @@ namespace Asset_tracking
                 AssetsList = AssetsList.OrderBy(a => a.GetType().Name).ThenBy(a => a.PurchaseDate).ToList();
                 ColoredText.WriteLine("\n Assets ordered by type of Asset and then by purchase date.", ConsoleColor.Yellow);
             }
-            else if (byTypeOrLocation == "byLocation")
+            else if (byTypeOrCountry == "byCountry")
             {
-                AssetsList = AssetsList.OrderBy(a => a.Location).ThenBy(a => a.PurchaseDate).ToList();
+                AssetsList = AssetsList.OrderBy(a => a.Country).ThenBy(a => a.PurchaseDate).ToList();
                 ColoredText.WriteLine("\n Assets ordered by country and then by purchase date.", ConsoleColor.Yellow);
             }
         
@@ -107,7 +106,7 @@ namespace Asset_tracking
             foreach (Asset asset in AssetsList)
             {
 
-                Console.Write("\n " + asset.GetType().Name.PadRight(17) + asset.Brand.PadRight(11) + asset.ModelName.PadRight(15) + asset.Location.PadRight(10));
+                Console.Write("\n " + asset.GetType().Name.PadRight(17) + asset.Brand.PadRight(11) + asset.ModelName.PadRight(15) + asset.Country.PadRight(10));
                 
                 if (DateTime.Now.AddMonths(-36 + 3) >= asset.PurchaseDate)
                 {
@@ -131,14 +130,18 @@ namespace Asset_tracking
             AssetsList = AssetsList.OrderBy(a => a.GetType().Name).ThenBy(a => a.PurchaseDate).ToList();
             
             // Write header line.
-            ColoredText.Write("\n Type of Asset".PadRight(19) + "Brand".PadRight(11) + "Model".PadRight(15), ConsoleColor.Green);
+            ColoredText.Write("\n Type of Asset".PadRight(21) + "Brand".PadRight(11) + "Model".PadRight(15), ConsoleColor.Green);
             ColoredText.Write("Country".PadRight(10) + "Purchase date".PadRight(16) + "Price in SEK".PadRight(15), ConsoleColor.Green);
             ColoredText.WriteLine("Currency".PadRight(11) + "Local price".PadRight(14), ConsoleColor.Green);
 
             for (int i = 0; i < AssetsList.Count; i++)
             {
-                Console.Write("\n " + (i + 1) + ". " + AssetsList[i].GetType().Name.PadRight(17) + AssetsList[i].Brand.PadRight(11) );
-                Console.Write(AssetsList[i].ModelName.PadRight(15) + AssetsList[i].Location.PadRight(10) + AssetsList[i].PurchaseDate.ToString("yyyy-MM-dd").PadRight(16));
+                if (i < 9)
+                    Console.Write("\n  " + (i + 1) + ". " + AssetsList[i].GetType().Name.PadRight(15) + AssetsList[i].Brand.PadRight(11) );
+                else
+                    Console.Write("\n " + (i + 1) + ". " + AssetsList[i].GetType().Name.PadRight(15) + AssetsList[i].Brand.PadRight(11));
+
+                Console.Write(AssetsList[i].ModelName.PadRight(15) + AssetsList[i].Country.PadRight(10) + AssetsList[i].PurchaseDate.ToString("yyyy-MM-dd").PadRight(16));
                 Console.WriteLine(AssetsList[i].Price.ToString().PadRight(15) + AssetsList[i].Currency.PadRight(11) + AssetsList[i].LocalPrice.ToString().PadRight(14));
             }
         }
@@ -153,19 +156,18 @@ namespace Asset_tracking
             Console.WriteLine("\n " + (2) + ". Sweden");
             Console.WriteLine("\n " + (3) + ". Usa");
 
-            ColoredText.Write("\n Enter a line number: ", ConsoleColor.Yellow);
             int countryIndex = GetValidatedIntFromConsole("Line number", 1, 3);
 
-            string location = "Usa";
+            string country = "Usa";
             string currency = "USD";
 
             if (countryIndex == 1) {
-                location = "Germany";
+                country = "Germany";
                 currency = "EUR";
             }
             else if (countryIndex == 2)
             {
-                location = "Sweden";
+                country = "Sweden";
                 currency = "SEK";
             }
 
@@ -174,28 +176,25 @@ namespace Asset_tracking
             Console.WriteLine("\n " + (1) + ". Computer");
             Console.WriteLine("\n " + (2) + ". Mobile phone");
 
-            ColoredText.Write("\n Enter a line number: ", ConsoleColor.Yellow);
-            int typeIndex = GetValidatedIntFromConsole("Type of asset", 1, 3); 
+            int typeIndex = GetValidatedIntFromConsole("Line number", 1, 2); 
 
-
-            ColoredText.WriteLine("\n Enter the brand name of the asset.", ConsoleColor.Yellow);
+            ColoredText.Write("\n Enter the brand name of the asset. ", ConsoleColor.Yellow);
             string brand = GetValidatedStringFromConsole("Brand name");
 
-            ColoredText.WriteLine("\n Enter the model name of the asset.", ConsoleColor.Yellow);
+            ColoredText.Write("\n Enter the model name of the asset. ", ConsoleColor.Yellow);
             string model = GetValidatedStringFromConsole("Model name");
 
             ColoredText.Write("\n Enter the purchase date: ", ConsoleColor.Yellow);
-            string dateStr = GetValidatedDateFromConsole();
-            DateTime purchaseDate = DateTime.Parse(dateStr);
+            DateTime purchaseDate = GetValidatedDateFromConsole();
 
-            ColoredText.WriteLine("\n Enter the price of the product in swedish krona.", ConsoleColor.Yellow);
+            ColoredText.WriteLine("\n Enter the price of the product in swedish krona. ", ConsoleColor.Yellow);
             decimal price = GetValidatedDecimalFromConsole("Price");
 
             Asset asset;
             if (typeIndex == 1 )
-                asset = new Computer(nextAssetID++, brand, model, purchaseDate, price, currency, location);
+                asset = new Computer(nextAssetID++, brand, model, purchaseDate, price, currency, country);
             else  // typeIndex == 2
-                asset = new MobilePhone(nextAssetID++, brand, model, purchaseDate, price, currency, location);
+                asset = new MobilePhone(nextAssetID++, brand, model, purchaseDate, price, currency, country);
     
             AssetsList.Add(asset);
 
@@ -221,30 +220,33 @@ namespace Asset_tracking
 
             while (String.IsNullOrEmpty(result))
             {
-                ColoredText.WriteLine(" " + variableName + " can't be an empty string", ConsoleColor.Red);
+                ColoredText.WriteLine("\n " + variableName + " can't be an empty string", ConsoleColor.Red);
 
-                Console.Write(" Enter a " + variableName + ": ");
+                ColoredText.Write("\n Enter a " + variableName + ": ", ConsoleColor.Yellow);
                 result = Console.ReadLine();
             }
 
             return result;
         }
 
+       
+
         public int GetValidatedIntFromConsole(string variableName, int min, int max)
         {
-            bool isValidInteger;
+            bool isValidInteger = false;
             int index;
             do
             {
+                ColoredText.Write("\n Enter a " + variableName + ": ", ConsoleColor.Yellow);
                 isValidInteger = int.TryParse(Console.ReadLine(), out index);
 
                 if (isValidInteger == false)
                 {
-                    ColoredText.WriteLine(" " + variableName + " can only contain digits and can't be empty.", ConsoleColor.Red);
+                    ColoredText.WriteLine("\n " + variableName + " can only contain digits and can't be empty.", ConsoleColor.Red);
                 }
                 else if (index < min || index > max)
                 {
-                    ColoredText.WriteLine(" " + variableName + " must be non-negative and higher than zero and lower than " + (max + 1) + ".", ConsoleColor.Red);
+                    ColoredText.WriteLine("\n " + variableName + " must be non-negative and higher than zero and lower than " + (max + 1) + ".", ConsoleColor.Red);
                     isValidInteger = false;
                 }
             } while (isValidInteger == false);
@@ -254,54 +256,47 @@ namespace Asset_tracking
 
         public decimal GetValidatedDecimalFromConsole(string variableName)
         {
-            bool isDecimal;
+            bool isDecimal = false;
             decimal value;
+
             do
             {
+                ColoredText.Write("\n Enter a " + variableName + ": ", ConsoleColor.Yellow);
                 isDecimal = decimal.TryParse(Console.ReadLine(), out value);
 
                 if (isDecimal == false)
                 {
-                    ColoredText.WriteLine(" " + variableName + " can only contain digits and can't be empty.", ConsoleColor.Red);
+                    ColoredText.WriteLine("\n " + variableName + " can only contain digits and can't be empty.", ConsoleColor.Red);
                 }
                 else if (value < 1)
                 {
-                    ColoredText.WriteLine(" " + variableName + " must be higher than zero.", ConsoleColor.Red);
+                    ColoredText.WriteLine("\n " + variableName + " must be higher than zero.", ConsoleColor.Red);
                     isDecimal = false;
                 }
+
+
             } while (isDecimal == false);
 
-            return Math.Round(value);
+                return Math.Round(value);
         }
 
         // Thera are two cases, in the first case NullOrEmpty is allowed, in the second case its treated as an error.
-        private string GetValidatedDateFromConsole()
+        private DateTime GetValidatedDateFromConsole()
         {
             bool isDate;
-            string result;
-            do
+            DateTime date;
+            
+            isDate = DateTime.TryParse(Console.ReadLine(), out date);
+            
+            while (isDate == false)
             {
-                result = Console.ReadLine();
+                ColoredText.WriteLine("\n You have not entered a valid date.", ConsoleColor.Red);
+               
+                ColoredText.Write("\n Enter a valid date: ", ConsoleColor.Yellow);
+                isDate = DateTime.TryParse(Console.ReadLine(), out date);
+            } 
 
-
-                if (String.IsNullOrEmpty(result))
-                {
-                    ColoredText.WriteLine(" You have entered an empty date.", ConsoleColor.Red);
-                    isDate = false;
-                }
-                else
-                {
-                    isDate = DateTime.TryParse(result, out DateTime dueDate);
-
-                    if (isDate == false)
-                    {
-                        ColoredText.WriteLine(" You have not entered a valid date.", ConsoleColor.Red);
-                    }
-                }
-
-            } while (isDate == false);
-
-            return result;
+            return date;
         }
 
 
