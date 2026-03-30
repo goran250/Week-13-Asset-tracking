@@ -29,19 +29,6 @@ namespace Asset_tracking
 			return Math.Round(localPrice);
         }
 
-        private static decimal getLocalCurrencyRate(string localCurrencyCode)
-        {
-            foreach (Currency currency in CurrencyList)
-            {
-                if (localCurrencyCode == currency.CurrencyCode)
-                {
-                    return currency.ExchangeRate;
-                }
-            }
-
-            return 1;
-        }
-
         public static void FetchCurrencyRatesFromECB()
         {
             CurrencyList = new List<Currency>();
@@ -66,20 +53,19 @@ namespace Asset_tracking
                 }
             }
         }
-    }
 
-    public class Currency
-    {
-        public string CurrencyCode { get; set; }
-        public decimal ExchangeRate { get; set; }
-
-        public Currency(string currencyCode, decimal exchangeRate)
+        private static decimal getLocalCurrencyRate(string localCurrencyCode)
         {
-            CurrencyCode = currencyCode;
-            ExchangeRate = exchangeRate;
+            foreach (Currency currency in CurrencyList)
+            {
+                if (localCurrencyCode == currency.CurrencyCode)
+                {
+                    return currency.ExchangeRate;
+                }
+            }
+
+            return 1;
         }
     }
-
-
 }
 

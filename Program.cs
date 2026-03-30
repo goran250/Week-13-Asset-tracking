@@ -12,9 +12,7 @@ namespace Asset_tracking
         {
             tracker = new AssetTracker();
 
-            Console.SetWindowSize(120, 65);
-
-          
+            Console.SetWindowSize(120, 50);
 
             ColoredText.WriteLine("\n Welcome to this Asset-tracker app!", ConsoleColor.Yellow);
 
