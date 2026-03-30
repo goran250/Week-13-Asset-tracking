@@ -75,8 +75,6 @@ namespace Asset_tracking
 
             ShowMenu();
         }
-
-      
     }
 }
 
